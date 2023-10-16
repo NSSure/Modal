@@ -29,6 +29,7 @@
     [Parameter] public ModalAnimationType? AnimationType { get; set; }
     [Parameter] public bool? UseCustomLayout { get; set; }
     [Parameter] public bool? ActivateFocusTrap { get; set; }
+    [Parameter] public string? ScriptPath { get; set; }
 
     private readonly Collection<ModalReference> _modals = new();
     private readonly ModalOptions _globalModalOptions = new();
@@ -67,7 +68,12 @@
     {
         if (firstRender)
         {
-            _styleFunctions = await JsRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/Blazored.Modal/BlazoredModal.razor.js");
+            if (string.IsNullOrWhiteSpace(this.ScriptPath))
+            {
+                this.ScriptPath = "./_content/Blazored.Modal/BlazoredModal.razor.js";
+            }
+
+            _styleFunctions = await JsRuntime.InvokeAsync<IJSObjectReference>("import", this.ScriptPath);
         }
     }
 
